@@ -8,7 +8,7 @@ class App extends React.Component {
 
         //THIS IS THE ONLY TIME WE DO DIRECT ASSIGNMENT
         // to.this.state
-        this.state = { lat: null };
+        this.state = { lat: null, errorMessage: '' };
 
         // Geolocation API
         window.navigator.geolocation.getCurrentPosition(
@@ -16,15 +16,24 @@ class App extends React.Component {
                 // Call setState!!
                 this.setState({lat: position.coords.latitude});
             },
-            err => console.log(err)
+            err => {
+                this.setState({ errorMessage: err.message});
+            }
         );
     }
 
     // React says we have to define render
-    render(){
+    render() {
+        
+        if (this.state.errorMessage && !this.state.lat) {
+            return <div>Error: {this.state.errorMessage}</div>;
+        }
+        
+        if (!this.state.errorMessage && this.state.lat) {
+            return <div>Latitude: {this.state.lat}</div>;
+        }
 
-
-        return <div>Latitude: {this.state.lat}</div>;
+        return <div>Loading!</div>;
     }
 }
 
